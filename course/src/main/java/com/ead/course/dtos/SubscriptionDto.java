@@ -1,14 +1,13 @@
 package com.ead.course.dtos;
 
-import java.util.UUID;
+import lombok.Data;
 
 import javax.validation.constraints.NotNull;
-
-import lombok.Data;
+import java.util.UUID;
 
 @Data
 public class SubscriptionDto {
 
-	@NotNull
-	private UUID userId;
+    @NotNull
+    private UUID userId;
 }

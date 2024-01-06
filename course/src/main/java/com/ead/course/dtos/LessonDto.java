@@ -1,18 +1,16 @@
 package com.ead.course.dtos;
 
-import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
 
 @Data
 public class LessonDto {
 
-	@NotBlank
-	private String title;
-	
-	private String description;	
-	
-	@NotBlank
-	private String videoUrl;
-	
+    @NotBlank
+    private String title;
+    private String description;
+    @NotBlank
+    private String videoUrl;
 }
