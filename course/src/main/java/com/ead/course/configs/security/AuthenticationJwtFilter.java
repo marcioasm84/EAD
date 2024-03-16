@@ -1,4 +1,4 @@
-package com.ead.authuser.configs.security;
+package com.ead.course.configs.security;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -8,6 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,15 +18,12 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import lombok.extern.log4j.Log4j2;
-
-@Log4j2
 public class AuthenticationJwtFilter extends OncePerRequestFilter {
 
+	Logger log = LogManager.getLogger(AuthenticationJwtFilter.class);
+	
 	@Autowired
 	JwtProvider jwtProvider;
-	@Autowired
-	UserDetailsServiceImpl userDetailsService;
 	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -33,7 +32,9 @@ public class AuthenticationJwtFilter extends OncePerRequestFilter {
 			String jwtStr = getTokenHeader(request);
 			if(jwtStr != null && jwtProvider.validadeJwt(jwtStr)) {
 				String userId = jwtProvider.getSubjectJwt(jwtStr);
-				UserDetails userDetails = userDetailsService.loadUserById(UUID.fromString(userId));
+				String rolesStr = jwtProvider.getClaimNameJwt(jwtStr, "roles");
+				
+				UserDetails userDetails = UserDetailsImpl.build(UUID.fromString(userId), rolesStr);
 				
 				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 						userDetails, null, userDetails.getAuthorities()

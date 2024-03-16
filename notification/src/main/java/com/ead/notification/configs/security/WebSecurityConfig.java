@@ -1,4 +1,4 @@
-package com.ead.authuser.configs.security;
+package com.ead.notification.configs.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -20,16 +20,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
-	@Autowired
-	UserDetailsServiceImpl userDetailsService;
 	
 	@Autowired
 	AuthenticationEntryPointImpl authenticationEntryPoint;
-	
-	private static final String[] AUTH_WHITELIST = {
-			"/auth/**"
-	};
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -39,7 +32,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
 			.authorizeRequests()
-			.antMatchers(AUTH_WHITELIST).permitAll()
 			.anyRequest().authenticated()
 			.and()
 			.csrf().disable();
@@ -65,20 +57,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		roleHierarchy.setHierarchy(hierarchy);
 		return roleHierarchy;
 	}
-	
-	/* Busca em memoria o usuario
+
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication()
-		.withUser("admin")
-		.password(passwordEncoder().encode("123456"))
-		.roles("ADMIN");
-	}**/
-	
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService)
-			.passwordEncoder(passwordEncoder());
+		
 	}
 	
 	@Bean
